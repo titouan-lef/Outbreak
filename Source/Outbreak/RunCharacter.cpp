@@ -38,6 +38,19 @@ void ARunCharacter::Shoot()
 	CurrentWeapon->Fire();
 }
 
+FRotator ARunCharacter::GetCameraRotation()
+{
+	return Camera->GetComponentRotation();
+}
+
+void ARunCharacter::SetCameraRotation(FRotator cameraRotation)
+{
+	Camera->SetWorldRotation(cameraRotation);
+	
+	if (CurrentWeapon)
+		CurrentWeapon->SetActorRotation(cameraRotation);
+}
+
 void ARunCharacter::GetNewWeapon(AWeapon* newWeapon)
 {
 	if (!CurrentWeapon)// If no weapon equipped

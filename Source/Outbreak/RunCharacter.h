@@ -21,7 +21,13 @@ public:
 	void Shoot();
 
 	UFUNCTION()
+	FRotator GetCameraRotation();
+
+	UFUNCTION()
 	void GetNewWeapon(class AWeapon* newWeapon);
+
+	UFUNCTION()
+	void SetCameraRotation(FRotator cameraRotation);
 
 protected:
 	// Called when the game starts or when spawned

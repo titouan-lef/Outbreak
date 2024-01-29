@@ -22,16 +22,44 @@ void ARunCharacterController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	// Axis
-	InputComponent->BindAxis("MoveRight", this, &ARunCharacterController::MoveRight);
+	InputComponent->BindAxis("MoveLR", this, &ARunCharacterController::MoveLR);
+	InputComponent->BindAxis("LookLR", this, &ARunCharacterController::LookLR);
+	InputComponent->BindAxis("LookUD", this, &ARunCharacterController::LookUD);
 
 	// Actions
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ARunCharacterController::Jump);
 	InputComponent->BindAction("Shoot", IE_Pressed, this, &ARunCharacterController::Shoot);
 }
 
-void ARunCharacterController::MoveRight(float scale)
+void ARunCharacterController::MoveLR(float scale)
 {
 	RunCharacter->AddMovementInput(RunCharacter->GetActorRightVector() * scale);
+}
+
+void ARunCharacterController::LookLR(float scale)
+{
+	FRotator rotation = RunCharacter->GetCameraRotation();
+	rotation.Yaw += scale;
+
+	if (rotation.Yaw > maxRotationLR)
+		rotation.Yaw = maxRotationLR;
+	else if (rotation.Yaw < -maxRotationLR)
+		rotation.Yaw = -maxRotationLR;
+
+	RunCharacter->SetCameraRotation(rotation);
+}
+
+void ARunCharacterController::LookUD(float scale)
+{
+	FRotator rotation = RunCharacter->GetCameraRotation();
+	rotation.Pitch += scale;
+
+	if (rotation.Pitch > maxRotationUD)
+		rotation.Pitch = maxRotationUD;
+	else if (rotation.Pitch < -maxRotationUD)
+		rotation.Pitch = -maxRotationUD;
+
+	RunCharacter->SetCameraRotation(rotation);
 }
 
 void ARunCharacterController::Jump()

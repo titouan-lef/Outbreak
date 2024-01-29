@@ -32,7 +32,19 @@ protected:
 	void SetupInputComponent() override;
 
 	UFUNCTION()
-	void MoveRight(float scale);
+	void MoveLR(float scale);
+
+	UFUNCTION()
+	void LookLR(float scale);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float maxRotationLR = 45;
+
+	UFUNCTION()
+	void LookUD(float scale);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float maxRotationUD = 30;
 
 	UFUNCTION()
 	void Jump();
