@@ -17,6 +17,9 @@ public:
 	// Sets default values for this character's properties
 	ARunCharacter();
 
+	UFUNCTION(BlueprintCallable)
+	AWeapon* GetWeapon();
+
 	UFUNCTION()
 	void Shoot();
 

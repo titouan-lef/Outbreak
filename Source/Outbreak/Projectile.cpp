@@ -27,10 +27,10 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	Sphere->OnComponentHit.AddDynamic(this, &AProjectile::OnProjectileHit);
+	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::OnProjectileHit);
 }
 
-void AProjectile::OnProjectileHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AProjectile::OnProjectileHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	OnHit.Broadcast(OtherActor);
 }

@@ -20,6 +20,12 @@ public:
 
 	UFUNCTION()
 	void Fire();
+
+	UFUNCTION(BlueprintCallable, Category = "Widget")
+	FString GetName();
+
+	UFUNCTION(BlueprintCallable, Category = "Widget")
+	int GetCurrentAmmo();
 	
 protected:
 	// Called when the game starts or when spawned
@@ -52,8 +58,6 @@ protected:
 	TSubclassOf<class AProjectile> ProjectileClass;
 
 private:
-	UFUNCTION()
-	void ObserverProjectile(AActor* otherActor);
 
 	UFUNCTION()
 	void OnHit(AActor* otherActor);

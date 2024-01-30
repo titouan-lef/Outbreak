@@ -28,13 +28,6 @@ void AWeapon::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentAmmo = InitialAmmo;
-
-	Fire();
-}
-
-void AWeapon::ObserverProjectile(AActor* otherActor)
-{
-	OnHit(otherActor);
 }
 
 void AWeapon::OnHit(AActor* otherActor)
@@ -61,6 +54,15 @@ void AWeapon::Fire()
 	CurrentAmmo--;
 
 	AProjectile* newProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, Muzzle->GetComponentTransform());
-	newProjectile->OnHit.AddDynamic(this, &AWeapon::ObserverProjectile);
-	UE_LOG(LogTemp, Warning, TEXT("Fire !"));
+	newProjectile->OnHit.AddDynamic(this, &AWeapon::OnHit);
+}
+
+FString AWeapon::GetName()
+{
+	return Name;
+}
+
+int AWeapon::GetCurrentAmmo()
+{
+	return CurrentAmmo;
 }

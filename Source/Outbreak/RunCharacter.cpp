@@ -30,6 +30,11 @@ ARunCharacter::ARunCharacter()
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
 }
 
+AWeapon* ARunCharacter::GetWeapon()
+{
+	return CurrentWeapon;
+}
+
 void ARunCharacter::Shoot()
 {
 	if (!CurrentWeapon)
