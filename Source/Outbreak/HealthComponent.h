@@ -16,6 +16,12 @@ public:
 	// Sets default values for this component's properties
 	UHealthComponent();
 
+	UFUNCTION(Category = "Health")
+	void ChangeLife(float delta);
+
+	UFUNCTION(Category = "Health")
+	bool IsDead();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -25,16 +31,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float CurrentHealth = 100.0f;
-
-	UFUNCTION(BlueprintCallable, Category = "Health")
-	void ChangeLife(float delta);
-
-	UFUNCTION(BlueprintCallable, Category = "Health")
-	bool IsDead();
-
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 		
 };

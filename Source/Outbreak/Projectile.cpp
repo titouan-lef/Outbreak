@@ -27,5 +27,11 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Sphere->OnComponentHit.AddDynamic(this, &AProjectile::OnProjectileHit);
+}
+
+void AProjectile::OnProjectileHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	OnHit.Broadcast(OtherActor);
 }
 

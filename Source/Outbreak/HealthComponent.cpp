@@ -8,7 +8,7 @@ UHealthComponent::UHealthComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -30,18 +30,12 @@ void UHealthComponent::ChangeLife(float delta)
 
 	if (CurrentHealth > MaxHealth)
 		CurrentHealth = MaxHealth;
+
+	UE_LOG(LogTemp, Warning, TEXT("Health: %f"), CurrentHealth);
 }
 
 bool UHealthComponent::IsDead()
 {
 	return CurrentHealth <= 0;
-}
-
-// Called every frame
-void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 

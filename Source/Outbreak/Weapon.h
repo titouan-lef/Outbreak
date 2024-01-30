@@ -50,4 +50,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	TSubclassOf<class AProjectile> ProjectileClass;
+
+private:
+	UFUNCTION()
+	void ObserverProjectile(AActor* otherActor);
+
+	UFUNCTION()
+	void OnHit(AActor* otherActor);
 };

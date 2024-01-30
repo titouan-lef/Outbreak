@@ -3,11 +3,13 @@
 
 #include "RunCharacter.h"
 #include "Weapon.h"
+#include "HealthComponent.h"
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
+
 
 // Sets default values
 ARunCharacter::ARunCharacter()
@@ -24,6 +26,8 @@ ARunCharacter::ARunCharacter()
 
 	WeaponAttachment = CreateDefaultSubobject<UArrowComponent>("WeaponAttachment");
 	WeaponAttachment->SetupAttachment(GetMesh());
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
 }
 
 void ARunCharacter::Shoot()

@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
+// Tile is a name which is shown on the Blueprint node
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHitSignature, class AActor*, Actor);
+
 UCLASS()
 class OUTBREAK_API AProjectile : public AActor
 {
@@ -14,6 +17,10 @@ class OUTBREAK_API AProjectile : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AProjectile();
+
+	// EVENT DISPATCHERS
+	UPROPERTY(BlueprintAssignable)
+	FHitSignature OnHit;
 
 protected:
 	// Called when the game starts or when spawned
@@ -27,4 +34,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UProjectileMovementComponent* ProjectileMovement;
+
+	UFUNCTION()
+	void OnProjectileHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

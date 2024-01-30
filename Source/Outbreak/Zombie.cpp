@@ -2,13 +2,26 @@
 
 
 #include "Zombie.h"
+#include "HealthComponent.h"
 
 // Sets default values
 AZombie::AZombie()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
+}
+
+void AZombie::TakeDamage(float damage)
+{
+	HealthComponent->ChangeLife(-damage);
+
+	if (HealthComponent->IsDead())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Zombie is dead"));
+		Destroy();
+	}
 }
 
 // Called when the game starts or when spawned
@@ -16,12 +29,6 @@ void AZombie::BeginPlay()
 {
 	Super::BeginPlay();
 	
-}
-
-// Called every frame
-void AZombie::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
 }
 

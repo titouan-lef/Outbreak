@@ -2,6 +2,8 @@
 
 
 #include "Weapon.h"
+#include "Projectile.h"
+#include "Zombie.h"
 
 #include "Components/SceneComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -30,6 +32,18 @@ void AWeapon::BeginPlay()
 	Fire();
 }
 
+void AWeapon::ObserverProjectile(AActor* otherActor)
+{
+	OnHit(otherActor);
+}
+
+void AWeapon::OnHit(AActor* otherActor)
+{
+	AZombie* zombie = Cast<AZombie>(otherActor);
+	if (zombie)
+		zombie->TakeDamage(Damage);
+}
+
 void AWeapon::Fire()
 {
 	if (!ProjectileClass)
@@ -46,6 +60,7 @@ void AWeapon::Fire()
 
 	CurrentAmmo--;
 
-	GetWorld()->SpawnActor<AProjectile>(ProjectileClass, Muzzle->GetComponentTransform());
+	AProjectile* newProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, Muzzle->GetComponentTransform());
+	newProjectile->OnHit.AddDynamic(this, &AWeapon::ObserverProjectile);
 	UE_LOG(LogTemp, Warning, TEXT("Fire !"));
 }
