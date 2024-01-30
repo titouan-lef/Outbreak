@@ -26,10 +26,18 @@ protected:
 	int NbInitialTiles = 10;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile")
-	float delayRemoveTile = 0.2f;
+	float delayRemoveTile = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile")
 	class TSubclassOf<class ATile> TileClass;
+
+	// PLAYER
+
+	UPROPERTY(EditAnywhere)
+	float delayReloadLevel = 2;
+
+	UFUNCTION()
+	void OnDeath();
 
 	// WIDGET
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
@@ -48,6 +56,13 @@ private:
 
 	UFUNCTION()
 	void OnExited(class ATile* tile);
+
+	// PLAYER
+	UFUNCTION()
+	void ObserverRunCharacter();
+
+	UFUNCTION()
+	void ReloadLevel();
 
 	// WIDGET
 	UFUNCTION()

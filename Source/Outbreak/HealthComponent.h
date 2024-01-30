@@ -22,6 +22,9 @@ public:
 	UFUNCTION(Category = "Health")
 	bool IsDead();
 
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetLife();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

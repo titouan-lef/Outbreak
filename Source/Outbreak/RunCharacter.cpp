@@ -60,6 +60,17 @@ void ARunCharacter::SetCameraRotation(FRotator cameraRotation)
 		CurrentWeapon->SetActorRotation(cameraRotation);
 }
 
+void ARunCharacter::TakeDamages(float damage)
+{
+	HealthComponent->ChangeLife(-damage);
+
+	if (HealthComponent->IsDead())
+	{
+		GetMesh()->SetVisibility(false);
+		OnDeath.Broadcast();
+	}
+}
+
 void ARunCharacter::GetNewWeapon(AWeapon* newWeapon)
 {
 	if (!CurrentWeapon)// If no weapon equipped

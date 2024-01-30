@@ -22,12 +22,19 @@ void ARunGameMode::BeginPlay()
 
 	UE_LOG(LogTemp, Warning, TEXT("BeginPlay RunGameMode"));
 
-	//ObserverRunCharacter();
+	ObserverRunCharacter();
 
 	for (int i = 0; i < NbInitialTiles; i++)
 		AddTile();
 
 	SetUpWidget();
+}
+
+void ARunGameMode::OnDeath()
+{
+	FTimerHandle timerHandle;
+	FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &ARunGameMode::ReloadLevel);
+	GetWorldTimerManager().SetTimer(timerHandle, timerDelegate, delayReloadLevel, false);
 }
 
 void ARunGameMode::AddTile()
@@ -53,6 +60,25 @@ void ARunGameMode::OnExited(ATile* tile)
 	FTimerHandle timerHandle;
 	FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &ARunGameMode::RemoveTile, tile);
 	GetWorldTimerManager().SetTimer(timerHandle, timerDelegate, delayRemoveTile, false);
+}
+
+void ARunGameMode::ObserverRunCharacter()
+{
+	// Get the player character
+	ACharacter* character = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if (!character) return;
+
+	// Cast the character to ARunCharacter
+	ARunCharacter* runCharacter = Cast<ARunCharacter>(character);
+	if (!runCharacter) return;
+
+	// Bind the OnDeath event
+	runCharacter->OnDeath.AddDynamic(this, &ARunGameMode::OnDeath);
+}
+
+void ARunGameMode::ReloadLevel()
+{
+	UKismetSystemLibrary::ExecuteConsoleCommand(GetWorld(), "RestartLevel");
 }
 
 void ARunGameMode::SetUpWidget()

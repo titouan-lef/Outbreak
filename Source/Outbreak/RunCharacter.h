@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "RunCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDeathSignature);
+
 class AWeapon;
 
 UCLASS()
@@ -17,6 +19,11 @@ public:
 	// Sets default values for this character's properties
 	ARunCharacter();
 
+	// EVENT DISPATCHERS
+	UPROPERTY(BlueprintAssignable)
+	FDeathSignature OnDeath;
+
+	// PUBLIC FUNCTIONS
 	UFUNCTION(BlueprintCallable)
 	AWeapon* GetWeapon();
 
@@ -32,6 +39,12 @@ public:
 	UFUNCTION()
 	void SetCameraRotation(FRotator cameraRotation);
 
+	UFUNCTION()
+	void TakeDamages(float damage);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UHealthComponent* HealthComponent;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -42,9 +55,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UCameraComponent* Camera;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UHealthComponent* HealthComponent;
 
 	// VARIABLES
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")

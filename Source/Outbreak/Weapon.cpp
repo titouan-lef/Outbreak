@@ -34,7 +34,7 @@ void AWeapon::OnHit(AActor* otherActor)
 {
 	AZombie* zombie = Cast<AZombie>(otherActor);
 	if (zombie)
-		zombie->TakeDamage(Damage);
+		zombie->TakeDamages(Damage);
 }
 
 void AWeapon::Fire()
