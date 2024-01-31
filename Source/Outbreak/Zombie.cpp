@@ -41,10 +41,10 @@ void AZombie::BeginPlay()
 	Super::BeginPlay();
 
 	canAttack = true;
-	
-	PlayerDetection->OnComponentBeginOverlap.AddDynamic(this, &AZombie::OnPlayerDetectionOverlapBegin);
 
-	AttackDetection->OnComponentBeginOverlap.AddDynamic(this, &AZombie::OnAttackDetectionOverlapBegin);
+	// Wait for the next frame to ensure the controller is initialized
+	FTimerHandle timerHandle;
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, this, &AZombie::OnDelayedBeginPlay, 2, false);
 }
 
 void AZombie::FollowPlayer(AAIController* controllerZombie, ARunCharacter* runCharacter)
@@ -104,4 +104,11 @@ void AZombie::OnAttackDetectionOverlapBegin(UPrimitiveComponent* OverlappedComp,
 		Attack(runCharacter);
 	}
 		
+}
+
+void AZombie::OnDelayedBeginPlay()
+{
+	PlayerDetection->OnComponentBeginOverlap.AddDynamic(this, &AZombie::OnPlayerDetectionOverlapBegin);
+
+	AttackDetection->OnComponentBeginOverlap.AddDynamic(this, &AZombie::OnAttackDetectionOverlapBegin);
 }

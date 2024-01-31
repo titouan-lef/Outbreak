@@ -35,6 +35,9 @@ void AWeapon::OnHit(AProjectile* projectile, AActor* otherActor)
 	AZombie* zombie = Cast<AZombie>(otherActor);
 	if (zombie)
 		zombie->TakeDamages(Damage);
+
+	UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *otherActor->GetName());
+	projectile->Destroy();
 }
 
 void AWeapon::Fire()

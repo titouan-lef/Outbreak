@@ -19,6 +19,9 @@ public:
 	ATile();
 
 	UFUNCTION()
+	void Remove();
+
+	UFUNCTION()
 	FTransform GetTransformAttachPoint();
 
 	// EVENT DISPATCHERS
@@ -48,6 +51,22 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UBoxComponent* ExitTrigger;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UBoxComponent* SpawnZone;
+
+	// ZOMBIES
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zombie")
+	TArray<TSubclassOf<class AZombie>> ZombieClasses;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zombie")
+	int MaxZombies = 5;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zombie")
+	float SpawnChance = 0.5f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Zombie")
+	class UBoxComponent* DestroyZone;
+
 
 	// VARIABLES
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "References")
@@ -57,4 +76,12 @@ protected:
 	// FUNCTIONS
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+private:
+	// ZOMBIES
+	UFUNCTION()
+	void SpawnManyZombies();
+
+	UFUNCTION()
+	void SpawnZombie();
 };

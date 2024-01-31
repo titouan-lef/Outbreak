@@ -49,7 +49,7 @@ void ARunGameMode::AddTile()
 
 void ARunGameMode::RemoveTile(ATile* tile)
 {
-	tile->Destroy();
+	tile->Remove();
 }
 
 void ARunGameMode::OnExited(ATile* tile)
