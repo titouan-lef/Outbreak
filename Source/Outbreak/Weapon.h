@@ -60,5 +60,5 @@ protected:
 private:
 
 	UFUNCTION()
-	void OnHit(AActor* otherActor);
+	void OnHit(AProjectile* projectile, AActor* otherActor);
 };

@@ -30,7 +30,7 @@ void AWeapon::BeginPlay()
 	CurrentAmmo = InitialAmmo;
 }
 
-void AWeapon::OnHit(AActor* otherActor)
+void AWeapon::OnHit(AProjectile* projectile, AActor* otherActor)
 {
 	AZombie* zombie = Cast<AZombie>(otherActor);
 	if (zombie)

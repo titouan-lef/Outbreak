@@ -7,7 +7,7 @@
 #include "Projectile.generated.h"
 
 // Tile is a name which is shown on the Blueprint node
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHitSignature, class AActor*, Actor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FHitSignature, class AProjectile*, Projectile, class AActor*, Actor);
 
 UCLASS()
 class OUTBREAK_API AProjectile : public AActor
