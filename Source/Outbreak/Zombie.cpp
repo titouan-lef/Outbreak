@@ -5,6 +5,7 @@
 #include "HealthComponent.h"
 #include "RunCharacter.h"
 
+#include "Components/SceneComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -16,11 +17,16 @@ AZombie::AZombie()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	Scene = CreateDefaultSubobject<USceneComponent>("Scene");
+	SetRootComponent(Scene);
+
+	GetCapsuleComponent()->SetupAttachment(Scene);
+
 	PlayerDetection = CreateDefaultSubobject<USphereComponent>("PlayerDetection");
-	PlayerDetection->SetupAttachment(GetCapsuleComponent());
+	PlayerDetection->SetupAttachment(Scene);
 
 	AttackDetection = CreateDefaultSubobject<USphereComponent>("AttackDetection");
-	AttackDetection->SetupAttachment(GetCapsuleComponent());
+	AttackDetection->SetupAttachment(Scene);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
 }
@@ -62,7 +68,11 @@ void AZombie::BeginPlay()
 void AZombie::FollowPlayer(ARunCharacter* runCharacter)
 {
 	if (!runCharacter->HealthComponent->IsDead())
+	{
 		ControllerZombie->MoveToActor(runCharacter);
+		//ControllerZombie->MoveToLocation(FVector(0, 0, 0));
+		UE_LOG(LogTemp, Warning, TEXT("FollowPlayer"));
+	}
 }
 
 void AZombie::InitControllerZombie()

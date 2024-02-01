@@ -93,8 +93,9 @@ protected:
 
 private:
 	void SpawnManyZombie();
+	void SetZombieLocation(AZombie* zombie, FVector spawnLocation);
 
-	bool CheckOverlapAtLocation(FVector spawnLocation);
+	bool CheckOverlapAtLocation(AActor* actor);
 
 	template <typename T>
 	void SpawnManyActor(TArray<TSubclassOf<T>> actorClasses, int maxActor, float spawnChance)
@@ -123,23 +124,7 @@ private:
 			return;
 		}
 
-		bool overlap = true;
-		int maxAttempts = 10;  // Limit the number of attempts to spawn an actor
-
-		FVector spawnLocation;
-		for (int attempt = 0; attempt < maxAttempts && overlap; ++attempt)
-		{
-			spawnLocation = UKismetMathLibrary::RandomPointInBoundingBox(SpawnZone->Bounds.Origin, SpawnZone->Bounds.BoxExtent);
-
-			// Check if there is an overlap at the location
-			overlap = CheckOverlapAtLocation(spawnLocation);
-		}
-
-		if (overlap)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No location found"));
-			return;
-		}
+		FVector spawnLocation = UKismetMathLibrary::RandomPointInBoundingBox(SpawnZone->Bounds.Origin, SpawnZone->Bounds.BoxExtent);
 
 		//float randomYaw = UKismetMathLibrary::RandomFloatInRange(0, 360);
 		FRotator spawnRotation = FRotator(0, 0, 0);
@@ -154,5 +139,22 @@ private:
 
 		// Define the position & rotation of the child component
 		childActorComponent->SetRelativeLocationAndRotation(spawnLocation, spawnRotation);
+
+		// Verifications
+		bool overlap = CheckOverlapAtLocation(childActorComponent->GetChildActor());// Check if there is an overlap at the location
+		int maxAttempts = 10;  // Limit the number of attempts to spawn an actor
+
+		for (int attempt = 0; attempt < maxAttempts && overlap; ++attempt)
+		{
+			spawnLocation = UKismetMathLibrary::RandomPointInBoundingBox(SpawnZone->Bounds.Origin, SpawnZone->Bounds.BoxExtent);
+			childActorComponent->SetRelativeLocation(spawnLocation);
+			overlap = CheckOverlapAtLocation(childActorComponent->GetChildActor());
+		}
+
+		if (overlap)
+		{
+			childActorComponent->DestroyComponent();
+			UE_LOG(LogTemp, Warning, TEXT("No location found"));
+		}
 	}
 };

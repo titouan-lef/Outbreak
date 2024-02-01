@@ -6,10 +6,11 @@
 #include "GameFramework/Character.h"
 #include "SpeedMovement.h"
 #include "Damageable.h"
+#include "NotStackingActor.h"
 #include "Zombie.generated.h"
 
 UCLASS()
-class OUTBREAK_API AZombie : public ACharacter, public ISpeedMovement, public IDamageable
+class OUTBREAK_API AZombie : public ACharacter, public ISpeedMovement, public IDamageable, public INotStackingActor
 {
 	GENERATED_BODY()
 
@@ -25,6 +26,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	// COMPONENTS
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class USceneComponent* Scene;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USphereComponent* PlayerDetection;
 

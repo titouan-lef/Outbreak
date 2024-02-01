@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NotStackingActor.h"
 #include "Obstacle.generated.h"
 
 UCLASS()
-class OUTBREAK_API AObstacle : public AActor
+class OUTBREAK_API AObstacle : public AActor, public INotStackingActor
 {
 	GENERATED_BODY()
 	
