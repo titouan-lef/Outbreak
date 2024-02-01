@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "SpeedMovement.h"
+#include "Damageable.h"
 #include "Zombie.generated.h"
 
 UCLASS()
-class OUTBREAK_API AZombie : public ACharacter
+class OUTBREAK_API AZombie : public ACharacter, public ISpeedMovement, public IDamageable
 {
 	GENERATED_BODY()
 
@@ -15,8 +17,8 @@ public:
 	// Sets default values for this character's properties
 	AZombie();
 
-	UFUNCTION()
-	void TakeDamages(float damage);
+	virtual void ChangeSpeedMovement(float delta) override;
+	virtual void TakeDamages(float damage) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -34,7 +36,7 @@ protected:
 
 	// FOLOW PLAYER
 	UFUNCTION()
-	void FollowPlayer(AAIController* controllerZombie, ARunCharacter* runCharacter);
+	void FollowPlayer(ARunCharacter* runCharacter);
 
 	// ATTACK
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
@@ -43,6 +45,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	float atkSpeed = 2;
 
+	// SPEED MOVEMENT
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpeedMovement")
+	float Speed = 100;
+
 	// EVENTS
 	UFUNCTION()
 	void OnPlayerDetectionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -50,12 +56,17 @@ protected:
 	UFUNCTION()
 	void OnAttackDetectionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-private:
 	UFUNCTION()
-	void OnDelayedBeginPlay();
+	void OnAttackDetectionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+private:
+	// FOLOW PLAYER
+	class AAIController* ControllerZombie = nullptr;
+
+	void InitControllerZombie();
 
 	// ATTACK
-	bool canAttack = false;
+	bool CanAttack = false;
 
 	void Attack(ARunCharacter* runCharacter);
 	void RestartAttack(ARunCharacter* runCharacter);

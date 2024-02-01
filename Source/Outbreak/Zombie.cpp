@@ -7,6 +7,7 @@
 
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include <Runtime/AIModule/Classes/AIController.h>
 
 // Sets default values
@@ -35,36 +36,49 @@ void AZombie::TakeDamages(float damage)
 	}
 }
 
+void AZombie::ChangeSpeedMovement(float delta)
+{
+	Speed += delta;
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
+}
+
 // Called when the game starts or when spawned
 void AZombie::BeginPlay()
 {
 	Super::BeginPlay();
 
-	canAttack = true;
+	CanAttack = true;
 
-	// Wait for the next frame to ensure the controller is initialized
-	FTimerHandle timerHandle;
-	GetWorld()->GetTimerManager().SetTimer(timerHandle, this, &AZombie::OnDelayedBeginPlay, 2, false);
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
+
+	InitControllerZombie();
+
+	PlayerDetection->OnComponentBeginOverlap.AddDynamic(this, &AZombie::OnPlayerDetectionOverlapBegin);
+
+	AttackDetection->OnComponentBeginOverlap.AddDynamic(this, &AZombie::OnAttackDetectionOverlapBegin);
+	AttackDetection->OnComponentEndOverlap.AddDynamic(this, &AZombie::OnAttackDetectionOverlapEnd);
 }
 
-void AZombie::FollowPlayer(AAIController* controllerZombie, ARunCharacter* runCharacter)
+void AZombie::FollowPlayer(ARunCharacter* runCharacter)
 {
 	if (!runCharacter->HealthComponent->IsDead())
-	{
-		controllerZombie->MoveToActor(runCharacter);
-		FTimerHandle timerHandle;
-		FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AZombie::FollowPlayer, controllerZombie, runCharacter);
-		GetWorldTimerManager().SetTimer(timerHandle, timerDelegate, 1, false);
-	}
+		ControllerZombie->MoveToActor(runCharacter);
+}
+
+void AZombie::InitControllerZombie()
+{
+	ControllerZombie = Cast<AAIController>(GetController());
+	if (!ControllerZombie)
+		UE_LOG(LogTemp, Warning, TEXT("Zombie has no AIController"));
 }
 
 void AZombie::Attack(ARunCharacter* runCharacter)
 {
 	UE_LOG(LogTemp, Warning, TEXT("ATK"));
-	if (canAttack && !runCharacter->HealthComponent->IsDead())
+	if (CanAttack && !runCharacter->HealthComponent->IsDead())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ATK SUCCESS"));
-		canAttack = false;
+		CanAttack = false;
 		runCharacter->TakeDamages(Damage);
 
 		FTimerHandle timerHandleAtk;
@@ -75,24 +89,17 @@ void AZombie::Attack(ARunCharacter* runCharacter)
 
 void AZombie::RestartAttack(ARunCharacter* runCharacter)
 {
-	canAttack = true;
+	CanAttack = true;
+
 	if (AttackDetection->IsOverlappingActor(runCharacter))
 		Attack(runCharacter);
 }
 
 void AZombie::OnPlayerDetectionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Zombie detected player"));
-	AAIController* controllerZombie = Cast<AAIController>(GetController());
-	if (!controllerZombie)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Zombie has no AIController"));
-		return;
-	}
-
 	ARunCharacter* runCharacter = Cast<ARunCharacter>(OtherActor);
 	if (runCharacter)
-		FollowPlayer(controllerZombie, runCharacter);
+		FollowPlayer(runCharacter);
 }
 
 void AZombie::OnAttackDetectionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -103,12 +110,11 @@ void AZombie::OnAttackDetectionOverlapBegin(UPrimitiveComponent* OverlappedComp,
 		UE_LOG(LogTemp, Warning, TEXT("Zombie attacked player"));
 		Attack(runCharacter);
 	}
-		
 }
 
-void AZombie::OnDelayedBeginPlay()
+void AZombie::OnAttackDetectionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	PlayerDetection->OnComponentBeginOverlap.AddDynamic(this, &AZombie::OnPlayerDetectionOverlapBegin);
-
-	AttackDetection->OnComponentBeginOverlap.AddDynamic(this, &AZombie::OnAttackDetectionOverlapBegin);
+	ARunCharacter* runCharacter = Cast<ARunCharacter>(OtherActor);
+	if (runCharacter)
+		FollowPlayer(runCharacter);
 }

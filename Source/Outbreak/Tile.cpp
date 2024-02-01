@@ -4,11 +4,11 @@
 #include "Tile.h"
 #include "RunCharacter.h"
 #include "Zombie.h"
+#include "Obstacle.h"
 
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/ArrowComponent.h"
-#include "Components/BoxComponent.h"
 
 #include "Kismet/KismetMathLibrary.h"
 
@@ -66,7 +66,9 @@ void ATile::BeginPlay()
 	
 	ExitTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATile::OnBoxBeginOverlap);
 
-	SpawnManyZombies();
+	SpawnManyZombie();
+
+	SpawnManyActor(ObstacleClasses, MaxObstacles, ObstacleSpawnChance);
 }
 
 void ATile::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -77,38 +79,49 @@ void ATile::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other
 		OnExited.Broadcast(this);
 }
 
-void ATile::SpawnManyZombies()
+void ATile::SpawnManyZombie()
 {
-	for (int i = 0; i < MaxZombies; i++)
-	{
-		float random = UKismetMathLibrary::RandomFloatInRange(0, 1);
-		if (random < SpawnChance)
-			SpawnZombie();
-	}
-}
 
-void ATile::SpawnZombie()
-{
 	if (ZombieClasses.Num() == 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No ZombieClasses"));
 		return;
 	}
 
-	FVector spawnLocation = UKismetMathLibrary::RandomPointInBoundingBox(SpawnZone->GetComponentLocation(), SpawnZone->Bounds.BoxExtent);
-	spawnLocation.Z = 20;
-
-	//float randomYaw = UKismetMathLibrary::RandomFloatInRange(0, 360);
-	FRotator spawnRotation = FRotator(1, 1, 1);
-
-	int randomIndex = UKismetMathLibrary::RandomIntegerInRange(0, ZombieClasses.Num() - 1);
-
-	if (!ZombieClasses[randomIndex])
+	for (int i = 0; i < MaxZombies; i++)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ZombieClasses[%d] is nullptr"), randomIndex);
-		return;
-	}
+		int randomIndex = UKismetMathLibrary::RandomIntegerInRange(0, ZombieClasses.Num() - 1);
+		if (!ZombieClasses[randomIndex])
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ZombieClasses[%d] is nullptr"), randomIndex);
+			return;
+		}
 
-	GetWorld()->SpawnActor<AZombie>(ZombieClasses[randomIndex], spawnLocation, spawnRotation);
+		float random = UKismetMathLibrary::RandomFloatInRange(0, 1);
+		if (random < ZombieSpawnChance)
+		{
+			FVector spawnLocation = UKismetMathLibrary::RandomPointInBoundingBox(SpawnZone->GetComponentLocation(), SpawnZone->Bounds.BoxExtent);
+
+			//float randomYaw = UKismetMathLibrary::RandomFloatInRange(0, 360);
+			FRotator spawnRotation = FRotator(0, 180, 0);
+
+			AZombie* zombie = GetWorld()->SpawnActor<AZombie>(ZombieClasses[randomIndex], spawnLocation, spawnRotation);
+			float zCoord = -zombie->GetMesh()->GetRelativeLocation().Z;
+			zombie->SetActorLocation(FVector(spawnLocation.X, spawnLocation.Y, zCoord));
+		}
+	}
 }
+
+bool ATile::CheckOverlapAtLocation(FVector spawnLocation)
+{
+	FCollisionQueryParams collisionParams;
+	collisionParams.AddIgnoredActor(this);
+
+	TArray<FHitResult> HitResults;
+	bool overlap = GetWorld()->SweepMultiByChannel(HitResults, spawnLocation, spawnLocation, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeSphere(1000.0f), collisionParams);
+
+	return overlap;
+}
+
+
 

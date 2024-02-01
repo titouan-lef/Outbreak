@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/BoxComponent.h"
 #include "Tile.generated.h"
+
+class UKismetMathLibrary;
+class UComponents;
 
 // Tile is a name which is shown on the Blueprint node
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FExitedSignature, class ATile*, Tile);
@@ -62,13 +66,23 @@ protected:
 	int MaxZombies = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Zombie")
-	float SpawnChance = 0.5f;
+	float ZombieSpawnChance = 0.5f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Zombie")
 	class UBoxComponent* DestroyZone;
 
+	// OBSTACLES
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Obstacle")
+	TArray<TSubclassOf<class AObstacle>> ObstacleClasses;
 
-	// VARIABLES
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Obstacle")
+	int MaxObstacles = 5;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Obstacle")
+	float ObstacleSpawnChance = 0.5f;
+
+
+	// RUN CHARACTER
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "References")
 	class TSubclassOf<class ARunCharacter> RunCharacterCLass;
 
@@ -78,10 +92,67 @@ protected:
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
-	// ZOMBIES
-	UFUNCTION()
-	void SpawnManyZombies();
+	void SpawnManyZombie();
 
-	UFUNCTION()
-	void SpawnZombie();
+	bool CheckOverlapAtLocation(FVector spawnLocation);
+
+	template <typename T>
+	void SpawnManyActor(TArray<TSubclassOf<T>> actorClasses, int maxActor, float spawnChance)
+	{
+		if (actorClasses.Num() == 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No actorClasses"));
+			return;
+		}
+
+		for (int i = 0; i < maxActor; i++)
+		{
+			float random = UKismetMathLibrary::RandomFloatInRange(0, 1);
+			if (random < spawnChance)
+				SpawnActor(actorClasses);
+		}
+	}
+
+	template <typename T>
+	void SpawnActor(TArray<TSubclassOf<T>> actorClasses)
+	{
+		int randomIndex = UKismetMathLibrary::RandomIntegerInRange(0, actorClasses.Num() - 1);
+		if (!actorClasses[randomIndex])
+		{
+			UE_LOG(LogTemp, Warning, TEXT("actorClasses[%d] is nullptr"), randomIndex);
+			return;
+		}
+
+		bool overlap = true;
+		int maxAttempts = 10;  // Limit the number of attempts to spawn an actor
+
+		FVector spawnLocation;
+		for (int attempt = 0; attempt < maxAttempts && overlap; ++attempt)
+		{
+			spawnLocation = UKismetMathLibrary::RandomPointInBoundingBox(SpawnZone->Bounds.Origin, SpawnZone->Bounds.BoxExtent);
+
+			// Check if there is an overlap at the location
+			overlap = CheckOverlapAtLocation(spawnLocation);
+		}
+
+		if (overlap)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No location found"));
+			return;
+		}
+
+		//float randomYaw = UKismetMathLibrary::RandomFloatInRange(0, 360);
+		FRotator spawnRotation = FRotator(0, 0, 0);
+
+		// Create and attach a child component to parent actor
+		UChildActorComponent* childActorComponent = NewObject<UChildActorComponent>(this, UChildActorComponent::StaticClass());
+		childActorComponent->RegisterComponent();
+		childActorComponent->SetChildActorClass(actorClasses[randomIndex]);
+
+		// Add the child component your parent actor
+		AddOwnedComponent(childActorComponent);
+
+		// Define the position & rotation of the child component
+		childActorComponent->SetRelativeLocationAndRotation(spawnLocation, spawnRotation);
+	}
 };

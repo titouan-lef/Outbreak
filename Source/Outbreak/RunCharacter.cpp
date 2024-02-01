@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Components/ArrowComponent.h"
 
 
@@ -28,6 +29,12 @@ ARunCharacter::ARunCharacter()
 	WeaponAttachment->SetupAttachment(GetMesh());
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
+}
+
+void ARunCharacter::ChangeSpeedMovement(float delta)
+{
+	Speed += delta;
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
 }
 
 AWeapon* ARunCharacter::GetWeapon()
@@ -94,6 +101,7 @@ void ARunCharacter::GetNewWeapon(AWeapon* newWeapon)
 void ARunCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
 }
 
