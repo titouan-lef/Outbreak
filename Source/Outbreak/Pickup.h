@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NotStackingActor.h"
 #include "Pickup.generated.h"
 
 UCLASS()
-class OUTBREAK_API APickup : public AActor
+class OUTBREAK_API APickup : public AActor, public INotStackingActor
 {
 	GENERATED_BODY()
 	
