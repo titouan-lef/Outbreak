@@ -16,5 +16,7 @@ class OUTBREAK_API AHealthPickup : public APickup
 
 protected:
 	void OnGet(ARunCharacter* runCharacter) override;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HealthAmount = 5;
 };
