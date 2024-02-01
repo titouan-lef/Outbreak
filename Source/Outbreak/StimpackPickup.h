@@ -13,5 +13,8 @@ UCLASS()
 class OUTBREAK_API AStimpackPickup : public APickup
 {
 	GENERATED_BODY()
+
+protected:
+	void OnGet(ARunCharacter* runCharacter) override;
 	
 };

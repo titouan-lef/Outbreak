@@ -5,13 +5,9 @@
 #include "Weapon.h"
 #include "RunCharacter.h"
 
-void AWeaponPickup::OnGet(AActor* OtherActor)
+void AWeaponPickup::OnGet(ARunCharacter* runCharacter)
 {
-	Super::OnGet(OtherActor);
-
-	ARunCharacter* runCharacter = Cast<ARunCharacter>(OtherActor);
-	if (!runCharacter)
-		return;
+	Super::OnGet(runCharacter);
 
 	if (!WeaponClass)
 	{

@@ -15,7 +15,7 @@ class OUTBREAK_API AWeaponPickup : public APickup
 	GENERATED_BODY()
 	
 protected:
-	void OnGet(AActor* OtherActor) override;
+	void OnGet(ARunCharacter* runCharacter) override;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")

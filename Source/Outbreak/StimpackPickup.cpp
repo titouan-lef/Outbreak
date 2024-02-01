@@ -3,3 +3,8 @@
 
 #include "StimpackPickup.h"
 
+void AStimpackPickup::OnGet(ARunCharacter* runCharacter)
+{
+	Super::OnGet(runCharacter);
+}
+

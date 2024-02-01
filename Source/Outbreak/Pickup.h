@@ -27,7 +27,7 @@ protected:
 	class UStaticMeshComponent* StaticMesh;
 
 	UFUNCTION()
-	virtual void OnGet(AActor* OtherActor);
+	virtual void OnGet(ARunCharacter* runCharacter);
 
 private:
 	UFUNCTION()

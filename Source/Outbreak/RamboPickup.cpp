@@ -3,3 +3,8 @@
 
 #include "RamboPickup.h"
 
+void ARamboPickup::OnGet(ARunCharacter* runCharacter)
+{
+	Super::OnGet(runCharacter);
+}
+

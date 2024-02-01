@@ -3,3 +3,7 @@
 
 #include "HealthPickup.h"
 
+void AHealthPickup::OnGet(ARunCharacter* runCharacter)
+{
+	Super::OnGet(runCharacter);
+}

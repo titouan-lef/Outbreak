@@ -2,6 +2,7 @@
 
 
 #include "Pickup.h"
+#include "RunCharacter.h"
 
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -28,13 +29,16 @@ void APickup::BeginPlay()
 	StaticMesh->OnComponentBeginOverlap.AddDynamic(this, &APickup::OnOverlapBegin);
 }
 
-void APickup::OnGet(AActor* OtherActor)
+void APickup::OnGet(ARunCharacter* runCharacter)
 {
 	Destroy();
 }
 
 void APickup::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndexType, bool bFromSweep, const FHitResult& SweepResult)
 {
-	OnGet(OtherActor);
+	ARunCharacter* runCharacter = Cast<ARunCharacter>(OtherActor);
+
+	if (runCharacter)
+		OnGet(runCharacter);
 }
 

@@ -3,3 +3,7 @@
 
 #include "AmmoPickup.h"
 
+void AAmmoPickup::OnGet(ARunCharacter* runCharacter)
+{
+	Super::OnGet(runCharacter);
+}

@@ -13,5 +13,8 @@ UCLASS()
 class OUTBREAK_API AHealthPickup : public APickup
 {
 	GENERATED_BODY()
+
+protected:
+	void OnGet(ARunCharacter* runCharacter) override;
 	
 };
