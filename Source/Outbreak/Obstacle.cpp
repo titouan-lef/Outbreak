@@ -30,12 +30,10 @@ void AObstacle::BeginPlay()
 
 void AObstacle::ActiveEffect(ACharacter* character)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Obstacle"));
 }
 
 void AObstacle::OnBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndexType, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnBeginOverlap Obstacle"));
 	ACharacter* character = Cast<ACharacter>(OtherActor);
 	if (character)
 		ActiveEffect(character);

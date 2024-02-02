@@ -74,10 +74,8 @@ void AZombie::InitControllerZombie()
 
 void AZombie::Attack(ARunCharacter* runCharacter)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ATK"));
 	if (CanAttack && !runCharacter->HealthComponent->IsDead())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ATK SUCCESS"));
 		CanAttack = false;
 		runCharacter->TakeDamages(Damage);
 
@@ -106,10 +104,7 @@ void AZombie::OnAttackDetectionOverlapBegin(UPrimitiveComponent* OverlappedComp,
 {
 	ARunCharacter* runCharacter = Cast<ARunCharacter>(OtherActor);
 	if (runCharacter)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Zombie attacked player"));
 		Attack(runCharacter);
-	}
 }
 
 void AZombie::OnAttackDetectionOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

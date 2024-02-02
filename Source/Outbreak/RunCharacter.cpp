@@ -107,6 +107,24 @@ void ARunCharacter::GetNewWeapon(AWeapon* newWeapon)
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Weapon already equipped"));
+
+		// Check if the new weapon is the same type as the current weapon
+		if (newWeapon->GetClass() == CurrentWeapon->GetClass())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Same weapon type"));
+			CurrentWeapon->AddAmmo();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Different weapon type"));
+			//CurrentWeapon->Destroy();
+			CurrentWeapon = newWeapon;
+			UE_LOG(LogTemp, Warning, TEXT("New weapon equipped"));
+
+			// Attach the weapon to the Run Character
+			//FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+			//newWeapon->AttachToComponent(WeaponAttachment, AttachmentRules);
+		}
 	}
 }
 

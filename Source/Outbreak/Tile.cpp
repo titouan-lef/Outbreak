@@ -147,10 +147,7 @@ bool ATile::CheckOverlapAtLocation(AActor* actor)
 	{
 		INotStackingActor* notStackingActor = Cast<INotStackingActor>(actorTmp);
 		if (notStackingActor)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Overlap entre %s et %s"), *actor->GetName(), *actorTmp->GetName());
 			return true;
-		}
 	}
 
 	return false;
