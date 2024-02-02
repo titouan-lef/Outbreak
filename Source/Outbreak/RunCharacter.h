@@ -36,6 +36,9 @@ public:
 	void Shoot();
 
 	UFUNCTION()
+	void ChangeRamboMode(bool enable);
+
+	UFUNCTION()
 	FRotator GetCameraRotation();
 
 	UFUNCTION()
@@ -61,6 +64,12 @@ protected:
 	// WEAPON
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 	class AWeapon* CurrentWeapon = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	bool OnRamboMode = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+	int RamboModeAccumulation = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UArrowComponent* WeaponAttachment;

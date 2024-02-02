@@ -5,6 +5,15 @@
 #include "Weapon.h"
 #include "RunCharacter.h"
 
+AWeaponPickup::AWeaponPickup()
+{
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = false;
+
+	StaticMesh2 = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh2");
+	StaticMesh2->SetupAttachment(StaticMesh);
+}
+
 void AWeaponPickup::OnGet(ARunCharacter* runCharacter)
 {
 	Super::OnGet(runCharacter);

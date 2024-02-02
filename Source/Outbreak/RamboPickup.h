@@ -16,5 +16,7 @@ class OUTBREAK_API ARamboPickup : public APickup
 
 protected:
 	void OnGet(ARunCharacter* runCharacter) override;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RamboModeDuration = 3;
 };

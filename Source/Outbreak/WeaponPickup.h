@@ -13,10 +13,15 @@ UCLASS()
 class OUTBREAK_API AWeaponPickup : public APickup
 {
 	GENERATED_BODY()
+
+public:
+	AWeaponPickup();
 	
 protected:
 	void OnGet(ARunCharacter* runCharacter) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UStaticMeshComponent* StaticMesh2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	class TSubclassOf<class AWeapon> WeaponClass;

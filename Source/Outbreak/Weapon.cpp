@@ -40,7 +40,7 @@ void AWeapon::OnHit(AProjectile* projectile, AActor* otherActor)
 	projectile->Destroy();
 }
 
-void AWeapon::Fire()
+void AWeapon::Fire(bool onRamboMode)
 {
 	if (!ProjectileClass)
 	{
@@ -54,10 +54,18 @@ void AWeapon::Fire()
 		return;
 	}
 
-	CurrentAmmo--;
+	if (!onRamboMode)
+		CurrentAmmo--;
 
 	AProjectile* newProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, Muzzle->GetComponentTransform());
 	newProjectile->OnHit.AddDynamic(this, &AWeapon::OnHit);
+}
+
+void AWeapon::AddAmmo()
+{
+	CurrentAmmo += InitialAmmo;
+	if (CurrentAmmo > MaxAmmo)
+		CurrentAmmo = MaxAmmo;
 }
 
 FString AWeapon::GetName()

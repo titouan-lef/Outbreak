@@ -19,7 +19,10 @@ public:
 	AWeapon();
 
 	UFUNCTION()
-	void Fire();
+	void Fire(bool loseAmmo);
+
+	UFUNCTION()
+	void AddAmmo();
 
 	UFUNCTION(BlueprintCallable, Category = "Widget")
 	FString GetName();
@@ -53,6 +56,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon stats")
 	int CurrentAmmo = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon stats")
+	int MaxAmmo = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	TSubclassOf<class AProjectile> ProjectileClass;

@@ -51,7 +51,20 @@ void ARunCharacter::Shoot()
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Shoot"));
-	CurrentWeapon->Fire();
+	CurrentWeapon->Fire(OnRamboMode);
+}
+
+void ARunCharacter::ChangeRamboMode(bool enable)
+{
+	if (enable)
+		++RamboModeAccumulation;
+	else
+	--RamboModeAccumulation;
+
+	if (RamboModeAccumulation == 0)
+		OnRamboMode = false;
+	else
+		OnRamboMode = true;
 }
 
 FRotator ARunCharacter::GetCameraRotation()

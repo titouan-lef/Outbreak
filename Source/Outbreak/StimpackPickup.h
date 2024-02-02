@@ -17,4 +17,9 @@ class OUTBREAK_API AStimpackPickup : public APickup
 protected:
 	void OnGet(ARunCharacter* runCharacter) override;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float StimpackSpeed = 100;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float StimpackDuration = 3;
 };
