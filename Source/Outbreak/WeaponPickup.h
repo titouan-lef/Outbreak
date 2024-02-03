@@ -24,5 +24,5 @@ protected:
 	class UStaticMeshComponent* StaticMesh2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
-	class TSubclassOf<class AWeapon> WeaponClass;
+	TArray<TSubclassOf<class AWeapon>> WeaponClasses;
 };

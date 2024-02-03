@@ -9,6 +9,9 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/ArrowComponent.h"
 
+#include "Math/TransformNonVectorized.h"
+#include <Kismet/KismetMathLibrary.h>
+
 AWeapon::AWeapon()
 {	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
@@ -21,6 +24,28 @@ AWeapon::AWeapon()
 
 	Muzzle = CreateDefaultSubobject<UArrowComponent>("Muzzle");
 	Muzzle->SetupAttachment(SkeletalMesh);
+}
+
+void AWeapon::StartFire()
+{
+	if (!ProjectileClass)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ProjectileClass is nullptr"));
+		return;
+	}
+
+	ShootEnable = true;
+	Fire();
+}
+
+void AWeapon::StopFire()
+{
+	ShootEnable = false;
+}
+
+void AWeapon::UnlimitAmmo(bool enable)
+{
+	AmmoUnlimited = enable;
 }
 
 void AWeapon::BeginPlay()
@@ -40,25 +65,39 @@ void AWeapon::OnHit(AProjectile* projectile, AActor* otherActor)
 	projectile->Destroy();
 }
 
-void AWeapon::Fire(bool onRamboMode)
+void AWeapon::Fire()
 {
-	if (!ProjectileClass)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ProjectileClass is nullptr"));
-		return;
-	}
-
 	if (CurrentAmmo <= 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No ammo"));
 		return;
 	}
 
-	if (!onRamboMode)
+	if (!AmmoUnlimited)
 		CurrentAmmo--;
 
 	AProjectile* newProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, Muzzle->GetComponentTransform());
 	newProjectile->OnHit.AddDynamic(this, &AWeapon::OnHit);
+
+	if (BulletByShoot > 1)
+	{
+		for (int i = 1; i < BulletByShoot; i++)
+		{
+			float pitch = UKismetMathLibrary::RandomFloatInRange(-BulletDispartion, BulletDispartion);
+			pitch += Muzzle->GetComponentRotation().Pitch;
+			float yaw = UKismetMathLibrary::RandomFloatInRange(-BulletDispartion, BulletDispartion);
+			yaw += Muzzle->GetComponentRotation().Yaw;
+
+			newProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FTransform(FRotator(pitch, yaw, 0), Muzzle->GetComponentLocation(), Muzzle->GetComponentScale()));
+			newProjectile->OnHit.AddDynamic(this, &AWeapon::OnHit);
+		}
+	}
+	
+	if (AutoShoot && ShootEnable)
+	{
+		FTimerHandle timerHandle;
+		GetWorldTimerManager().SetTimer(timerHandle, this, &AWeapon::Fire, 0.1f, false);
+	}
 }
 
 void AWeapon::AddAmmo()

@@ -29,6 +29,7 @@ void ARunCharacterController::SetupInputComponent()
 	// Actions
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ARunCharacterController::Jump);
 	InputComponent->BindAction("Shoot", IE_Pressed, this, &ARunCharacterController::Shoot);
+	InputComponent->BindAction("Shoot", IE_Released, this, &ARunCharacterController::StopShoot);
 }
 
 void ARunCharacterController::MoveLR(float scale)
@@ -70,6 +71,11 @@ void ARunCharacterController::Jump()
 void ARunCharacterController::Shoot()
 {
 	RunCharacter->Shoot();
+}
+
+void ARunCharacterController::StopShoot()
+{
+	RunCharacter->StopShoot();
 }
 
 void ARunCharacterController::InitRunCharacter()

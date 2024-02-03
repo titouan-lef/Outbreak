@@ -4,6 +4,7 @@
 #include "WeaponPickup.h"
 #include "Weapon.h"
 #include "RunCharacter.h"
+#include <Kismet/KismetMathLibrary.h>
 
 AWeaponPickup::AWeaponPickup()
 {
@@ -18,13 +19,20 @@ void AWeaponPickup::OnGet(ARunCharacter* runCharacter)
 {
 	Super::OnGet(runCharacter);
 
-	if (!WeaponClass)
+	if (WeaponClasses.Num() == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("WeaponClass null"));
+		UE_LOG(LogTemp, Warning, TEXT("No WeaponClasses"));
+		return;
+	}
+	
+	int randomIndex = UKismetMathLibrary::RandomIntegerInRange(0, WeaponClasses.Num() - 1);
+	if (!WeaponClasses[randomIndex])
+	{
+		UE_LOG(LogTemp, Warning, TEXT("WeaponClasses[%d] is nullptr"), randomIndex);
 		return;
 	}
 
-	AWeapon* newWeapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass);
+	AWeapon* newWeapon = GetWorld()->SpawnActor<AWeapon>(WeaponClasses[randomIndex]);
 	if (!newWeapon)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("newWeapon null"));

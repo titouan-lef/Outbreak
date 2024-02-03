@@ -36,6 +36,9 @@ public:
 	void Shoot();
 
 	UFUNCTION()
+	void StopShoot();
+
+	UFUNCTION()
 	void ChangeRamboMode(bool enable);
 
 	UFUNCTION()

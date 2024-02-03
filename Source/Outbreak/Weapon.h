@@ -19,7 +19,13 @@ public:
 	AWeapon();
 
 	UFUNCTION()
-	void Fire(bool loseAmmo);
+	void StartFire();
+
+	UFUNCTION()
+	void StopFire();
+
+	UFUNCTION()
+	void UnlimitAmmo(bool enable);
 
 	UFUNCTION()
 	void AddAmmo();
@@ -60,11 +66,27 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon stats")
 	int MaxAmmo = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon stats")
+	bool AutoShoot = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon stats")
+	int BulletByShoot = 1;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	TSubclassOf<class AProjectile> ProjectileClass;
 
 private:
+	UFUNCTION()
+	void Fire();
+
+	UPROPERTY()
+	bool ShootEnable = false;
+
+	UPROPERTY()
+	bool AmmoUnlimited = false;
 
 	UFUNCTION()
 	void OnHit(AProjectile* projectile, AActor* otherActor);
+
+	float BulletDispartion = 2;
 };

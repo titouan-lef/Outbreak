@@ -32,6 +32,8 @@ void AProjectile::BeginPlay()
 
 void AProjectile::OnProjectileHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	OnHit.Broadcast(this, OtherActor);
+	AProjectile* projectile = Cast<AProjectile>(OtherActor);
+	if (!projectile)
+		OnHit.Broadcast(this, OtherActor);
 }
 

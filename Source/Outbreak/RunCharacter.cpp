@@ -51,7 +51,19 @@ void ARunCharacter::Shoot()
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Shoot"));
-	CurrentWeapon->Fire(OnRamboMode);
+	CurrentWeapon->StartFire();
+}
+
+void ARunCharacter::StopShoot()
+{
+	if (!CurrentWeapon)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No weapon equipped"));
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("StopShoot"));
+	CurrentWeapon->StopFire();
 }
 
 void ARunCharacter::ChangeRamboMode(bool enable)
@@ -65,6 +77,9 @@ void ARunCharacter::ChangeRamboMode(bool enable)
 		OnRamboMode = false;
 	else
 		OnRamboMode = true;
+
+	if (CurrentWeapon)
+		CurrentWeapon->UnlimitAmmo(OnRamboMode);
 }
 
 FRotator ARunCharacter::GetCameraRotation()
@@ -117,13 +132,13 @@ void ARunCharacter::GetNewWeapon(AWeapon* newWeapon)
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Different weapon type"));
-			//CurrentWeapon->Destroy();
+			CurrentWeapon->Destroy();
 			CurrentWeapon = newWeapon;
 			UE_LOG(LogTemp, Warning, TEXT("New weapon equipped"));
 
 			// Attach the weapon to the Run Character
-			//FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-			//newWeapon->AttachToComponent(WeaponAttachment, AttachmentRules);
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+			newWeapon->AttachToComponent(WeaponAttachment, AttachmentRules);
 		}
 	}
 }
