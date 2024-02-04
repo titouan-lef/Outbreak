@@ -51,6 +51,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	float atkSpeed = 2;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	class USoundBase* AttackSound;
+
 	// SPEED MOVEMENT
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpeedMovement")
 	float Speed = 100;

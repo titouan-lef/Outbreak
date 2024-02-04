@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include <Runtime/AIModule/Classes/AIController.h>
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 AZombie::AZombie()
@@ -76,11 +77,14 @@ void AZombie::InitControllerZombie()
 
 void AZombie::Attack(ARunCharacter* runCharacter)
 {
-	if (CanAttack && !runCharacter->HealthComponent->IsDead())
+	if (!HealthComponent->IsDead() && CanAttack && !runCharacter->HealthComponent->IsDead())
 	{
 		CanAttack = false;
 		runCharacter->TakeDamages(Damage);
 		IsAttacking = true;
+
+		if (AttackSound)
+			UGameplayStatics::PlaySoundAtLocation(this, AttackSound, GetActorLocation());
 
 		FTimerHandle timerHandleAtk;
 		FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AZombie::RestartAttack, runCharacter);
