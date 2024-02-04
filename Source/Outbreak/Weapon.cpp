@@ -11,6 +11,7 @@
 
 #include "Math/TransformNonVectorized.h"
 #include <Kismet/KismetMathLibrary.h>
+#include <Kismet/GameplayStatics.h>
 
 AWeapon::AWeapon()
 {	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -21,12 +22,9 @@ AWeapon::AWeapon()
 
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMesh");
 	SkeletalMesh->SetupAttachment(Scene);
-
-	Muzzle = CreateDefaultSubobject<UArrowComponent>("Muzzle");
-	Muzzle->SetupAttachment(SkeletalMesh);
 }
 
-void AWeapon::StartFire()
+void AWeapon::StartFire(class UArrowComponent* muzzle)
 {
 	if (!ProjectileClass)
 	{
@@ -35,7 +33,7 @@ void AWeapon::StartFire()
 	}
 
 	ShootEnable = true;
-	Fire();
+	Fire(muzzle);
 }
 
 void AWeapon::StopFire()
@@ -61,14 +59,14 @@ void AWeapon::OnHit(AProjectile* projectile, AActor* otherActor)
 	if (zombie)
 		zombie->TakeDamages(Damage);
 
-	UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *otherActor->GetName());
 	projectile->Destroy();
 }
 
-void AWeapon::Fire()
+void AWeapon::Fire(class UArrowComponent* muzzle)
 {
 	if (CurrentAmmo <= 0)
 	{
+		UGameplayStatics::PlaySoundAtLocation(this, EmptyGunSound, GetActorLocation());
 		UE_LOG(LogTemp, Warning, TEXT("No ammo"));
 		return;
 	}
@@ -76,19 +74,21 @@ void AWeapon::Fire()
 	if (!AmmoUnlimited)
 		CurrentAmmo--;
 
-	AProjectile* newProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, Muzzle->GetComponentTransform());
+	AProjectile* newProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, muzzle->GetComponentTransform());
 	newProjectile->OnHit.AddDynamic(this, &AWeapon::OnHit);
+
+	UGameplayStatics::PlaySoundAtLocation(this, ShootSound, GetActorLocation());
 
 	if (BulletByShoot > 1)
 	{
 		for (int i = 1; i < BulletByShoot; i++)
 		{
 			float pitch = UKismetMathLibrary::RandomFloatInRange(-BulletDispartion, BulletDispartion);
-			pitch += Muzzle->GetComponentRotation().Pitch;
+			pitch += muzzle->GetComponentRotation().Pitch;
 			float yaw = UKismetMathLibrary::RandomFloatInRange(-BulletDispartion, BulletDispartion);
-			yaw += Muzzle->GetComponentRotation().Yaw;
+			yaw += muzzle->GetComponentRotation().Yaw;
 
-			newProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FTransform(FRotator(pitch, yaw, 0), Muzzle->GetComponentLocation(), Muzzle->GetComponentScale()));
+			newProjectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, FTransform(FRotator(pitch, yaw, 0), muzzle->GetComponentLocation(), muzzle->GetComponentScale()));
 			newProjectile->OnHit.AddDynamic(this, &AWeapon::OnHit);
 		}
 	}
@@ -96,7 +96,8 @@ void AWeapon::Fire()
 	if (AutoShoot && ShootEnable)
 	{
 		FTimerHandle timerHandle;
-		GetWorldTimerManager().SetTimer(timerHandle, this, &AWeapon::Fire, 0.1f, false);
+		FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AWeapon::Fire, muzzle);
+		GetWorldTimerManager().SetTimer(timerHandle, timerDelegate, 0.1f, false);
 	}
 }
 

@@ -49,6 +49,9 @@ protected:
 	UFUNCTION()
 	void Jump();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	class USoundBase* JumpSound;
+
 	UFUNCTION()
 	void Shoot();
 

@@ -77,6 +77,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UArrowComponent* WeaponAttachment;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UArrowComponent* ProjectileSpawn;
+
 	// SPEED MOVEMENT
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpeedMovement")
 	float Speed = 100;

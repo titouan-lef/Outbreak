@@ -19,7 +19,7 @@ public:
 	AWeapon();
 
 	UFUNCTION()
-	void StartFire();
+	void StartFire(class UArrowComponent* muzzle);
 
 	UFUNCTION()
 	void StopFire();
@@ -47,9 +47,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class USkeletalMeshComponent* SkeletalMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UArrowComponent* Muzzle;
-
 	// PROPERTIES
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon stats")
 	FString Name = "";
@@ -75,9 +72,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	TSubclassOf<class AProjectile> ProjectileClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	class USoundBase* ShootSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	class USoundBase* EmptyGunSound;
+
 private:
 	UFUNCTION()
-	void Fire();
+	void Fire(class UArrowComponent* muzzle);
 
 	UPROPERTY()
 	bool ShootEnable = false;

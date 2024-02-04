@@ -17,5 +17,4 @@ AFence::AFence()
 void AFence::ActiveEffect(ACharacter* character)
 {
 	Super::ActiveEffect(character);
-	UE_LOG(LogTemp, Warning, TEXT("Fence"));
 }

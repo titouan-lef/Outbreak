@@ -57,6 +57,13 @@ void ATile::Remove()
 	Destroy();
 }
 
+void ATile::FillTile()
+{
+	SpawnManyZombie();
+	SpawnManyActor(ObstacleClasses, MaxObstacles, ObstacleSpawnChance);
+	SpawnManyActor(PickupClasses, MaxPickups, PickupSpawnChance);
+}
+
 FTransform ATile::GetTransformAttachPoint()
 {
 	return AttachPoint->GetComponentTransform();
@@ -68,12 +75,6 @@ void ATile::BeginPlay()
 	Super::BeginPlay();
 	
 	ExitTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATile::OnBoxBeginOverlap);
-
-	SpawnManyZombie();
-
-	SpawnManyActor(ObstacleClasses, MaxObstacles, ObstacleSpawnChance);
-
-	SpawnManyActor(PickupClasses, MaxPickups, PickupSpawnChance);
 }
 
 void ATile::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

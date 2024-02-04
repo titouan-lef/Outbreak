@@ -23,7 +23,10 @@ protected:
 
 	// TILE
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile")
-	int NbInitialTiles = 10;
+	int NbInitialTiles = 2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile")
+	int NbLeadTiles = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tile")
 	float delayRemoveTile = 1;
@@ -49,7 +52,7 @@ private:
 	FTransform LastTileTransform;
 
 	UFUNCTION()
-	void AddTile();
+	void AddTile(bool fillTile);
 
 	UFUNCTION()
 	void RemoveTile(ATile* tile);

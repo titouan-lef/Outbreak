@@ -3,8 +3,10 @@
 
 #include "Fire.h"
 #include "Damageable.h"
+#include "RunCharacter.h"
 
 #include "GameFramework/Character.h"
+#include <Kismet/GameplayStatics.h>
 
 AFire::AFire()
 {
@@ -26,4 +28,8 @@ void AFire::ActiveEffect(ACharacter* character)
 		FTimerHandle timerHandle;
 		GetWorld()->GetTimerManager().SetTimer(timerHandle, [damageable, this]() { damageable->TakeDamages(FireDamage); }, DamageDelay * i, false);
 	}
+
+	ARunCharacter* runCharacter = Cast<ARunCharacter>(character);
+	if (runCharacter)
+		UGameplayStatics::PlaySoundAtLocation(this, Burn, runCharacter->GetActorLocation());
 }

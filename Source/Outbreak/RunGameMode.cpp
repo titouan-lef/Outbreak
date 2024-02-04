@@ -25,7 +25,10 @@ void ARunGameMode::BeginPlay()
 	ObserverRunCharacter();
 
 	for (int i = 0; i < NbInitialTiles; i++)
-		AddTile();
+		AddTile(false);
+
+	for (int i = 0; i < NbLeadTiles; i++)
+		AddTile(true);
 
 	SetUpWidget();
 }
@@ -37,7 +40,7 @@ void ARunGameMode::OnDeath()
 	GetWorldTimerManager().SetTimer(timerHandle, timerDelegate, delayReloadLevel, false);
 }
 
-void ARunGameMode::AddTile()
+void ARunGameMode::AddTile(bool fillTile)
 {
 	if (!TileClass) return;
 
@@ -45,6 +48,9 @@ void ARunGameMode::AddTile()
 	LastTileTransform = newTile->GetTransformAttachPoint();
 
 	newTile->OnExited.AddDynamic(this, &ARunGameMode::OnExited);
+
+	if (fillTile)
+		newTile->FillTile();
 }
 
 void ARunGameMode::RemoveTile(ATile* tile)
@@ -54,7 +60,7 @@ void ARunGameMode::RemoveTile(ATile* tile)
 
 void ARunGameMode::OnExited(ATile* tile)
 {
-	AddTile();
+	AddTile(true);
 
 	// Delay before destroying the tile
 	FTimerHandle timerHandle;

@@ -6,6 +6,7 @@
 
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 APickup::APickup()
@@ -31,6 +32,7 @@ void APickup::BeginPlay()
 
 void APickup::OnGet(ARunCharacter* runCharacter)
 {
+	UGameplayStatics::PlaySoundAtLocation(this, PickupSound, GetActorLocation());
 	Destroy();
 }
 

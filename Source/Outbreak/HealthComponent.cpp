@@ -32,8 +32,6 @@ void UHealthComponent::ChangeLife(float delta)
 		CurrentHealth = MaxHealth;
 	else if (CurrentHealth < 0)
 		CurrentHealth = 0;
-
-	UE_LOG(LogTemp, Warning, TEXT("Health: %f"), CurrentHealth);
 }
 
 bool UHealthComponent::IsDead()

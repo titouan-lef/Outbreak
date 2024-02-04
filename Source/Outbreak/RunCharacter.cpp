@@ -26,7 +26,10 @@ ARunCharacter::ARunCharacter()
 	Camera->SetupAttachment(SpringArm);
 
 	WeaponAttachment = CreateDefaultSubobject<UArrowComponent>("WeaponAttachment");
-	WeaponAttachment->SetupAttachment(GetMesh());
+	WeaponAttachment->SetupAttachment(Camera);
+
+	ProjectileSpawn = CreateDefaultSubobject<UArrowComponent>("ProjectileSpawn");
+	ProjectileSpawn->SetupAttachment(Camera);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
 }
@@ -50,8 +53,7 @@ void ARunCharacter::Shoot()
 		return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Shoot"));
-	CurrentWeapon->StartFire();
+	CurrentWeapon->StartFire(ProjectileSpawn);
 }
 
 void ARunCharacter::StopShoot()
@@ -62,7 +64,6 @@ void ARunCharacter::StopShoot()
 		return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("StopShoot"));
 	CurrentWeapon->StopFire();
 }
 
@@ -111,7 +112,6 @@ void ARunCharacter::GetNewWeapon(AWeapon* newWeapon)
 	if (!CurrentWeapon)// If no weapon equipped
 	{
 		CurrentWeapon = newWeapon;
-		UE_LOG(LogTemp, Warning, TEXT("New weapon equipped"));
 
 		// Attach the weapon to the Run Character
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
@@ -121,20 +121,13 @@ void ARunCharacter::GetNewWeapon(AWeapon* newWeapon)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Weapon already equipped"));
-
 		// Check if the new weapon is the same type as the current weapon
 		if (newWeapon->GetClass() == CurrentWeapon->GetClass())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Same weapon type"));
 			CurrentWeapon->AddAmmo();
-		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Different weapon type"));
 			CurrentWeapon->Destroy();
 			CurrentWeapon = newWeapon;
-			UE_LOG(LogTemp, Warning, TEXT("New weapon equipped"));
 
 			// Attach the weapon to the Run Character
 			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);

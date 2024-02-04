@@ -3,6 +3,7 @@
 
 #include "RunCharacterController.h"
 #include "RunCharacter.h"
+#include <Kismet/GameplayStatics.h>
 
 ARunCharacterController::ARunCharacterController()
 {
@@ -65,6 +66,7 @@ void ARunCharacterController::LookUD(float scale)
 
 void ARunCharacterController::Jump()
 {
+	UGameplayStatics::PlaySoundAtLocation(this, JumpSound, RunCharacter->GetActorLocation());
 	RunCharacter->Jump();
 }
 

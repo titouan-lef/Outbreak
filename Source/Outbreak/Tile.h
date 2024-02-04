@@ -26,6 +26,9 @@ public:
 	void Remove();
 
 	UFUNCTION()
+	void FillTile();
+
+	UFUNCTION()
 	FTransform GetTransformAttachPoint();
 
 	// EVENT DISPATCHERS
