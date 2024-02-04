@@ -33,14 +33,18 @@ void AFire::ActiveEffect(ACharacter* character)
 	if (!damageable)
 		return;
 
-	for (int i = 1; i <= NbRepetition; i++)
-	{
-		FTimerHandle timerHandle;
-		GetWorld()->GetTimerManager().SetTimer(timerHandle, [damageable, this]() { damageable->TakeDamages(FireDamage); }, DamageDelay * i, false);
-		TimerHandles.Add(timerHandle);
-	}
-
 	ARunCharacter* runCharacter = Cast<ARunCharacter>(character);
 	if (runCharacter)
 		UGameplayStatics::PlaySoundAtLocation(this, Burn, runCharacter->GetActorLocation());
+
+	for (int i = 1; i <= NbRepetition; i++)
+	{
+		FTimerHandle timerHandle;
+		GetWorld()->GetTimerManager().SetTimer(timerHandle, [damageable, runCharacter, this]() {
+			damageable->TakeDamages(FireDamage);
+			if (runCharacter)
+				UGameplayStatics::PlaySoundAtLocation(this, BurnDamage, runCharacter->GetActorLocation());
+		}, DamageDelay * i, false);
+		TimerHandles.Add(timerHandle);
+	}
 }
