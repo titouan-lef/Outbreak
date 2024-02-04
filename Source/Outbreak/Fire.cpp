@@ -14,6 +14,16 @@ AFire::AFire()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+void AFire::Destroyed()
+{
+	Super::Destroyed();
+
+	UE_LOG(LogTemp, Warning, TEXT("Fire destroyed"));
+
+	for (FTimerHandle timerHandle : TimerHandles)
+		GetWorldTimerManager().ClearTimer(timerHandle);
+}
+
 void AFire::ActiveEffect(ACharacter* character)
 {
 	Super::ActiveEffect(character);
@@ -27,6 +37,7 @@ void AFire::ActiveEffect(ACharacter* character)
 	{
 		FTimerHandle timerHandle;
 		GetWorld()->GetTimerManager().SetTimer(timerHandle, [damageable, this]() { damageable->TakeDamages(FireDamage); }, DamageDelay * i, false);
+		TimerHandles.Add(timerHandle);
 	}
 
 	ARunCharacter* runCharacter = Cast<ARunCharacter>(character);

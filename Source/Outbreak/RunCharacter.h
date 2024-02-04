@@ -32,6 +32,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AWeapon* GetWeapon();
 
+	UFUNCTION(BlueprintCallable)
+	int GetKill();
+
 	UFUNCTION()
 	void Shoot();
 
@@ -83,4 +86,13 @@ protected:
 	// SPEED MOVEMENT
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SpeedMovement")
 	float Speed = 100;
+
+private:
+	int KillCount = 0;
+
+	UFUNCTION()
+	void AddWeapon(class AWeapon* newWeapon);
+
+	UFUNCTION()
+	void AddKill();
 };

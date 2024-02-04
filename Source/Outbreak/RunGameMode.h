@@ -36,8 +36,8 @@ protected:
 
 	// PLAYER
 
-	UPROPERTY(EditAnywhere)
-	float delayReloadLevel = 2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float delayReloadLevel = 4;
 
 	UFUNCTION()
 	void OnDeath();

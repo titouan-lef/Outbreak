@@ -4,3 +4,7 @@
 #include "SpeedMovement.h"
 
 // Add default functionality here for any ISpeedMovement functions that are not pure virtual.
+
+void ISpeedMovement::ChangeSpeedMovement(float delta)
+{
+}

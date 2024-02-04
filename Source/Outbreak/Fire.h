@@ -19,6 +19,8 @@ class OUTBREAK_API AFire : public AObstacle
 
 public:
 	AFire();
+
+	virtual void Destroyed() override;
 	
 protected:
 	void ActiveEffect(ACharacter* character) override;
@@ -34,4 +36,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 	class USoundBase* Burn;
+
+private:
+	TArray<FTimerHandle> TimerHandles;
 };

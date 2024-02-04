@@ -65,4 +65,7 @@ public:
 private:
 	UFUNCTION()
 	void InitRunCharacter();
+
+	UFUNCTION()
+	void OnDeath();
 };

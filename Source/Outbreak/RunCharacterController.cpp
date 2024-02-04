@@ -3,6 +3,7 @@
 
 #include "RunCharacterController.h"
 #include "RunCharacter.h"
+#include "HealthComponent.h"
 #include <Kismet/GameplayStatics.h>
 
 ARunCharacterController::ARunCharacterController()
@@ -85,7 +86,16 @@ void ARunCharacterController::InitRunCharacter()
 	RunCharacter = Cast<ARunCharacter>(Super::GetPawn());
 
 	if (!RunCharacter)
+	{
 		UE_LOG(LogTemp, Warning, TEXT("RunCharacter is null"));
+	}
+	else
+		RunCharacter->OnDeath.AddDynamic(this, &ARunCharacterController::OnDeath);
+}
+
+void ARunCharacterController::OnDeath()
+{
+	DisableInput(this);
 }
 
 // Called every frame
@@ -93,6 +103,7 @@ void ARunCharacterController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	RunCharacter->AddMovementInput(RunCharacter->GetActorForwardVector());
+	if (!RunCharacter->HealthComponent->IsDead())
+		RunCharacter->AddMovementInput(RunCharacter->GetActorForwardVector());
 }
 

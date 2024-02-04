@@ -21,6 +21,14 @@ public:
 	virtual void ChangeSpeedMovement(float delta) override;
 	virtual void TakeDamages(float damage) override;
 
+	// ATTACK ANIMATION
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	bool IsAttacking = false;
+
+	// HEALTH COMPONENT
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UHealthComponent* HealthComponent;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -31,9 +39,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class USphereComponent* AttackDetection;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	class UHealthComponent* HealthComponent;
 
 	// FOLOW PLAYER
 	UFUNCTION()

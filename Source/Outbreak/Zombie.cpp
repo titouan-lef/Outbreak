@@ -32,6 +32,7 @@ void AZombie::TakeDamages(float damage)
 	if (HealthComponent->IsDead())
 	{
 		ControllerZombie->StopMovement();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		FTimerHandle timerHandleDestroy;
 		GetWorldTimerManager().SetTimer(timerHandleDestroy, this, &AZombie::Die, 2, false);
 	}
@@ -79,6 +80,7 @@ void AZombie::Attack(ARunCharacter* runCharacter)
 	{
 		CanAttack = false;
 		runCharacter->TakeDamages(Damage);
+		IsAttacking = true;
 
 		FTimerHandle timerHandleAtk;
 		FTimerDelegate timerDelegate = FTimerDelegate::CreateUObject(this, &AZombie::RestartAttack, runCharacter);

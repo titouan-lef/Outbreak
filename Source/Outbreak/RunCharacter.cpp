@@ -45,6 +45,11 @@ AWeapon* ARunCharacter::GetWeapon()
 	return CurrentWeapon;
 }
 
+int ARunCharacter::GetKill()
+{
+	return KillCount;
+}
+
 void ARunCharacter::Shoot()
 {
 	if (!CurrentWeapon)
@@ -103,6 +108,10 @@ void ARunCharacter::TakeDamages(float damage)
 	if (HealthComponent->IsDead())
 	{
 		GetMesh()->SetVisibility(false);
+
+		if (CurrentWeapon)
+			CurrentWeapon->WeaponVisibility(false);
+
 		OnDeath.Broadcast();
 	}
 }
@@ -110,15 +119,7 @@ void ARunCharacter::TakeDamages(float damage)
 void ARunCharacter::GetNewWeapon(AWeapon* newWeapon)
 {
 	if (!CurrentWeapon)// If no weapon equipped
-	{
-		CurrentWeapon = newWeapon;
-
-		// Attach the weapon to the Run Character
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-		newWeapon->AttachToComponent(WeaponAttachment, AttachmentRules);
-
-		//newWeapon->AttachToComponent(GetMesh(), AttachmentRules, FName(TEXT("GripPoint")));
-	}
+		AddWeapon(newWeapon);
 	else
 	{
 		// Check if the new weapon is the same type as the current weapon
@@ -127,11 +128,7 @@ void ARunCharacter::GetNewWeapon(AWeapon* newWeapon)
 		else
 		{
 			CurrentWeapon->Destroy();
-			CurrentWeapon = newWeapon;
-
-			// Attach the weapon to the Run Character
-			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-			newWeapon->AttachToComponent(WeaponAttachment, AttachmentRules);
+			AddWeapon(newWeapon);
 		}
 	}
 }
@@ -142,5 +139,23 @@ void ARunCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	GetCharacterMovement()->MaxWalkSpeed = Speed;
+}
+
+void ARunCharacter::AddWeapon(class AWeapon* newWeapon)
+{
+	CurrentWeapon = newWeapon;
+
+	// Attach the weapon to the Run Character
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+	newWeapon->AttachToComponent(WeaponAttachment, AttachmentRules);
+
+	//newWeapon->AttachToComponent(GetMesh(), AttachmentRules, FName(TEXT("GripPoint")));
+
+	newWeapon->OnKill.AddDynamic(this, &ARunCharacter::AddKill);
+}
+
+void ARunCharacter::AddKill()
+{
+	++KillCount;
 }
 

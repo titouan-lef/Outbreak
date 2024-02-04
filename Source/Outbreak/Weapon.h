@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FKillSignature);
+
 /**
  * 
  */
@@ -18,6 +20,11 @@ public:
 	// Sets default values for this actor's properties
 	AWeapon();
 
+	// EVENTS DISPATCHERS
+	UPROPERTY(BlueprintAssignable)
+	FKillSignature OnKill;
+
+	// PUBLIC FUNCTIONS
 	UFUNCTION()
 	void StartFire(class UArrowComponent* muzzle);
 
@@ -35,6 +42,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Widget")
 	int GetCurrentAmmo();
+
+	UFUNCTION()
+	void WeaponVisibility(bool visible);
 	
 protected:
 	// Called when the game starts or when spawned

@@ -4,6 +4,7 @@
 #include "Weapon.h"
 #include "Projectile.h"
 #include "Zombie.h"
+#include "HealthComponent.h"
 
 #include "Components/SceneComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -57,7 +58,11 @@ void AWeapon::OnHit(AProjectile* projectile, AActor* otherActor)
 {
 	AZombie* zombie = Cast<AZombie>(otherActor);
 	if (zombie)
+	{
 		zombie->TakeDamages(Damage);
+		if (zombie->HealthComponent->IsDead())
+			OnKill.Broadcast();
+	}
 
 	projectile->Destroy();
 }
@@ -116,4 +121,9 @@ FString AWeapon::GetName()
 int AWeapon::GetCurrentAmmo()
 {
 	return CurrentAmmo;
+}
+
+void AWeapon::WeaponVisibility(bool visible)
+{
+	SkeletalMesh->SetVisibility(visible);
 }
