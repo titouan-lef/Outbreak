@@ -71,4 +71,7 @@ private:
 
 	void Attack(ARunCharacter* runCharacter);
 	void RestartAttack(ARunCharacter* runCharacter);
+
+	// DEATH
+	void Die();
 };

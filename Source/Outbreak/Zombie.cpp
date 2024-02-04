@@ -31,8 +31,9 @@ void AZombie::TakeDamages(float damage)
 
 	if (HealthComponent->IsDead())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Zombie is dead"));
-		Destroy();
+		ControllerZombie->StopMovement();
+		FTimerHandle timerHandleDestroy;
+		GetWorldTimerManager().SetTimer(timerHandleDestroy, this, &AZombie::Die, 2, false);
 	}
 }
 
@@ -91,6 +92,11 @@ void AZombie::RestartAttack(ARunCharacter* runCharacter)
 
 	if (AttackDetection->IsOverlappingActor(runCharacter))
 		Attack(runCharacter);
+}
+
+void AZombie::Die()
+{
+	Destroy();
 }
 
 void AZombie::OnPlayerDetectionOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
